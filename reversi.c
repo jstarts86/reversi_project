@@ -45,5 +45,14 @@ int is_valid_move(int board[8][8], int y, int x, int player) {
         for (int i = 0; i < 8; i++) {
             int dy = directions[i][0], dx = directions[i][1];
             int ny = y + dy, nx = x + dx;
+            if (ny >= 0 && ny < 8 && nx >= 0 && nx < 8 && board[ny][nx] == opponent) {
+            while (ny + dy >= 0 && ny + dy < 8 && nx + dx >= 0 && nx + dx < 8 && board[ny + dy][nx + dx] == opponent) {
+                ny += dy;
+                nx += dx;
+            }
+            if (ny + dy >= 0 && ny + dy < 8 && nx + dx >= 0 && nx + dx < 8 && board[ny + dy][nx + dx] == player) {
+                return 1;
+            }
+        }
         }
 }
