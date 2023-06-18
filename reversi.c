@@ -35,3 +35,7 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
 }
     return flipped;
 }
+int is_valid_move(int board[8][8], int y, int x, int player) {
+
+
+}
