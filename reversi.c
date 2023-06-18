@@ -40,4 +40,8 @@ int is_valid_move(int board[8][8], int y, int x, int player) {
         return 0;
     }
 
+    int opponent = 3 - player;
+    int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
+        for (int i = 0; i < 8; i++) {
+        }
 }
