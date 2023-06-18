@@ -33,5 +33,5 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
             flipped += flip_count;
         }
 }
-
+    return flipped;
 }
