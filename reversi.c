@@ -25,6 +25,13 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
             ny += dy;
             nx += dx;
 }
+  if (ny >= 0 && ny < 8 && nx >= 0 && nx < 8 && board[ny][nx] == player) {
+            board[y][x] = player; // Place the new piece
+            for (int j = 0; j < flip_count; j++) {
+                board[flippables[j][0]][flippables[j][1]] = player;
+            }
+            flipped += flip_count;
+        }
 }
 
 }
