@@ -113,12 +113,6 @@ void count_pieces(int board[8][8], int* p1_pieces, int* p2_pieces) {
         }
     }
 }
-int flip_pieces(int board[8][8], int y, int x, int player) {
-    int flipped = 0;
-    int opponent = 3 - player;
-    int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
-
-}
 int listen_at_port(int portnum) {
     int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (sock_fd == 0) {
