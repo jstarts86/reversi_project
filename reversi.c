@@ -18,8 +18,10 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
     for (int i = 0; i < 8; i++) {
         int dy = directions[i][0], dx = directions[i][1];
         int ny = y + dy, nx = x + dx;
+
         int flippables[8][2]; // store potential flips
         int flip_count = 0;
+
         while (ny >= 0 && ny < 8 && nx >= 0 && nx < 8 && board[ny][nx] == opponent) {
             flippables[flip_count][0] = ny;
             flippables[flip_count][1] = nx;
@@ -35,6 +37,7 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
             flipped += flip_count;
         }
     }
+
     return flipped;
 }
 
@@ -43,6 +46,7 @@ int is_valid_move(int board[8][8], int y, int x, int player) {
     if (board[y][x] != 0) {
         return 0;
     }
+
     int opponent = 3 - player;
     int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
     for (int i = 0; i < 8; i++) {
@@ -92,6 +96,7 @@ void display_board(int board[8][8], int currentPlayer) {
         }
         printw("\n");
     }
+
     wrefresh(stdscr);
 }
 
@@ -108,14 +113,12 @@ void count_pieces(int board[8][8], int* p1_pieces, int* p2_pieces) {
         }
     }
 }
-
 int flip_pieces(int board[8][8], int y, int x, int player) {
     int flipped = 0;
     int opponent = 3 - player;
     int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
 
 }
-
 int listen_at_port(int portnum) {
     int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (sock_fd == 0) {
@@ -205,4 +208,67 @@ int connect_ipaddr_port(const char* ip, int port) {
     }
     return sock_fd;
 }
+
+void run_reversi(int socket, int role) {
+    initscr();
+
+    int board[8][8] = {{0}};
+    board[3][3] = 2;
+    board[3][4] = 1;
+    board[4][3] = 1;
+    board[4][4] = 2;
+
+    int currentPlayer = 1;
+    char buffer[256];
+
+    while (1) {
+        display_board(board, currentPlayer);
+
+        if (!can_make_move(board, currentPlayer)) {
+            printw("Player %d can't make a move.\n", currentPlayer);
+            currentPlayer = 3 - currentPlayer;
+            if (!can_make_move(board, currentPlayer)) {
+                int p1_pieces, p2_pieces;
+                count_pieces(board, &p1_pieces, &p2_pieces);
+
+                if (p1_pieces > p2_pieces) {
+                    printw("Game Over. Player 1 wins with %d pieces to %d.\n", p1_pieces, p2_pieces);
+                } else if (p2_pieces > p1_pieces) {
+                    printw("Game Over. Player 2 wins with %d pieces to %d.\n", p2_pieces, p1_pieces);
+                } else {
+                    printw("Game Over. It's a draw.\n");
+                }
+
+                getch();
+                break;
+            }
+            continue;
+        }
+
+        int x, y;
+
+        if ((currentPlayer == 1 && role == IS_SERVER) || (currentPlayer == 2 && role == IS_CLIENT)) {
+            printw("Enter the coordinates to place your piece (format: x y): ");
+            scanw("%d %d", &x, &y);
+            sprintf(buffer, "%d %d", x, y);
+            send(socket, buffer, strlen(buffer), 0);
+        } else {
+            printw("Waiting for opponent's move…\n");
+            recv(socket, buffer, 255, 0);
+            sscanf(buffer, "%d %d", &x, &y);
+        }
+
+        if (is_valid_move(board, y, x, currentPlayer)) {
+            flip_pieces(board, y, x, currentPlayer);
+            board[y][x] = currentPlayer;
+            currentPlayer = 3 - currentPlayer;
+        } else {
+            printw("Invalid move. Please try again.");
+            getch();
+        }
+    }
+
+    endwin();
+}
+
 
