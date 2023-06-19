@@ -76,3 +76,26 @@ int can_make_move(int board[8][8], int player) {
     }
     return 0;
 }
+
+void display_board(int board[8][8], int currentPlayer) {
+    wclear(stdscr);
+
+    printw("  0 1 2 3 4 5 6 7\n");
+    for (int y = 0; y < 8; y++) {
+        printw("%d ", y);
+        for (int x = 0; x < 8; x++) {
+            if (board[y][x] == 1) {
+                printw("X ");
+            } else if (board[y][x] == 2) {
+                printw("O ");
+            } else if (is_valid_move(board, y, x, currentPlayer)) {
+                printw("? ");
+            } else {
+                printw(". ");
+            }
+        }
+        printw("\n");
+    }
+
+    wrefresh(stdscr);
+}
