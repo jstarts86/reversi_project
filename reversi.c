@@ -1,3 +1,4 @@
+#include "reversi.h"
 #include <ncurses.h>
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -7,7 +8,7 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <linux/socket.h>
-#include "reversi.h"
+
 
 
 int flip_pieces(int board[8][8], int y, int x, int player) {
