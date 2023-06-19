@@ -18,10 +18,8 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
     for (int i = 0; i < 8; i++) {
         int dy = directions[i][0], dx = directions[i][1];
         int ny = y + dy, nx = x + dx;
-
         int flippables[8][2]; // store potential flips
         int flip_count = 0;
-
         while (ny >= 0 && ny < 8 && nx >= 0 && nx < 8 && board[ny][nx] == opponent) {
             flippables[flip_count][0] = ny;
             flippables[flip_count][1] = nx;
@@ -37,7 +35,6 @@ int flip_pieces(int board[8][8], int y, int x, int player) {
             flipped += flip_count;
         }
     }
-
     return flipped;
 }
 
@@ -46,7 +43,6 @@ int is_valid_move(int board[8][8], int y, int x, int player) {
     if (board[y][x] != 0) {
         return 0;
     }
-
     int opponent = 3 - player;
     int directions[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
     for (int i = 0; i < 8; i++) {
@@ -96,6 +92,19 @@ void display_board(int board[8][8], int currentPlayer) {
         }
         printw("\n");
     }
-
     wrefresh(stdscr);
+}
+
+void count_pieces(int board[8][8], int* p1_pieces, int* p2_pieces) {
+    *p1_pieces = 0;
+    *p2_pieces = 0;
+    for (int y = 0; y < 8; y++) {
+        for (int x = 0; x < 8; x++) {
+            if (board[y][x] == 1) {
+                (*p1_pieces)++;
+            } else if (board[y][x] == 2) {
+                (*p2_pieces)++;
+            }
+        }
+    }
 }
